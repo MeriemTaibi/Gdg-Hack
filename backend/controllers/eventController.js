@@ -6,20 +6,27 @@ import { sendDiscordMessage } from "../discordBot/bot.js";
 
 export const createEvent = async (req, res) => {
   try {
+
     const {
       name, description,
       number_organizers, number_participants,
       date_debut, date_end,
-      tasks,
+      tasks = [],
       announcementDate, announcementTime,
       discordMessage
     } = req.body;
 
-    // 1. Save organizers and tasks
     const savedTasks = [];
 
+    // 1. Save organizers + tasks
     for (const task of tasks) {
-      const savedOrganizers = await Organizer.insertMany(task.organizers);
+      const organizersList = task.organizers || [];
+
+      // Insert only if organizers exist
+      let savedOrganizers = [];
+      if (organizersList.length > 0) {
+        savedOrganizers = await Organizer.insertMany(organizersList);
+      }
 
       const t = await Task.create({
         ...task,
@@ -43,26 +50,31 @@ export const createEvent = async (req, res) => {
       discordMessage
     });
 
-    // 3. Schedule Discord announcement
+    // 3. Build cron expression (correct format)
     const cronExpr = convertToCron(announcementDate, announcementTime);
+    console.log("📌 Cron scheduled:", cronExpr);
 
     cron.schedule(cronExpr, () => {
+      console.log("⏰ Cron triggered! Sending announcement...");
       sendDiscordMessage(discordMessage);
     });
 
-    return res.status(201).json({ message: "Event created & announcement scheduled", event });
+    return res.status(201).json({
+      message: "Event created & announcement scheduled",
+      event
+    });
 
   } catch (error) {
-    console.error(error);
+    console.error("❌ Error creating event:", error);
     return res.status(500).json({ error: "Server error" });
   }
 };
 
-// Helper: convert date/time to cron
+// Helper: convert date+time → cron
 function convertToCron(dateStr, timeStr) {
   const [year, month, day] = dateStr.split("-");
   const [hour, minute] = timeStr.split(":");
 
-  // minute hour day month any-year
-  return `${minute} ${hour} ${day} ${month} *`;
+  // node-cron format: second minute hour day month weekday
+  return `0 ${minute} ${hour} ${day} ${month} *`;
 }

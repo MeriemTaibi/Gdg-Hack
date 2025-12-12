@@ -8,7 +8,8 @@ const TaskSchema = new mongoose.Schema({
   date: String,
   time: String,
   valid: { type: Boolean, default: false },
-  organizers: [Organizer.schema] 
+  organizers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Organizer", required: false }]
+
 });
 
 export default mongoose.model("Task", TaskSchema);

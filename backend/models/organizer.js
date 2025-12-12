@@ -2,8 +2,8 @@
 import mongoose from "mongoose";
 
 const OrganizerSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
+  name: { type: String, required: false},
+  email: { type: String, required: false },
   department: String,
   discord: String,
   experience: String,
