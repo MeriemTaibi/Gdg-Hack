@@ -6,7 +6,7 @@ import eventRoutes from "./routes/eventsRoute.js";
 import organizersRoutes from "./routes/organizersRoute.js";
 import { sendDiscordMessage } from "./discordBot/bot.js";
 import organizersRoute from "./routes/organizersRoute.js";
-
+import taskRoutes from "./routes/tasksRoute.js";
 dotenv.config();
 
 const app = express();
@@ -30,7 +30,7 @@ mongoose.connect(mongoURI)
 });
 
 // Routes
-
+app.use("/tasks", taskRoutes);
 app.use("/organizers", organizersRoute);
 app.use("/events", eventRoutes); 
 
