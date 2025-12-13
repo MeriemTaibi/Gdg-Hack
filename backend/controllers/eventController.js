@@ -3,7 +3,38 @@ import Task from "../models/task.js";
 import Organizer from "../models/organizer.js";
 import cron from "node-cron";
 import { sendDiscordMessage } from "../discordBot/bot.js";
+export const getEvents = async (req, res) => {
+  try {
+    const events = await Event.find()
+      .populate({
+        path: "tasks",
+        populate: { path: "organizers" }
+      });
+    res.status(200).json(events);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
+// Get single event by ID
+export const getEventById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const event = await Event.findById(id)
+      .populate({
+        path: "tasks",
+        populate: { path: "organizers" }
+      });
+
+    if (!event) return res.status(404).json({ error: "Event not found" });
+
+    res.status(200).json(event);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 export const createEvent = async (req, res) => {
   try {
 

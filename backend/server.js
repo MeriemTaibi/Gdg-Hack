@@ -2,8 +2,10 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import eventRoutes from "./routes/eventsRoute.js"; // your router file
+import eventRoutes from "./routes/eventsRoute.js"; 
+import organizersRoutes from "./routes/organizersRoute.js";
 import { sendDiscordMessage } from "./discordBot/bot.js";
+import organizersRoute from "./routes/organizersRoute.js";
 
 dotenv.config();
 
@@ -28,7 +30,10 @@ mongoose.connect(mongoURI)
 });
 
 // Routes
-app.use("/events", eventRoutes); // Mount the events router
+
+app.use("/organizers", organizersRoute);
+app.use("/events", eventRoutes); 
+
 
 // Test route
 app.get("/", (req, res) => res.send("Server is running"));

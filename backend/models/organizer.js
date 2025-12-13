@@ -1,14 +1,16 @@
-
+// models/organizer.js
 import mongoose from "mongoose";
 
-const OrganizerSchema = new mongoose.Schema({
-  name: { type: String, required: false},
+const organizerSchema = new mongoose.Schema({
+  name: { type: String, required: false },
   email: { type: String, required: false },
-  department: String,
-  discord: String,
-  experience: String,
-  motivation: String,
-  availability: String
+  discord: { type: String },
+  motivation: { type: String },
+  availability: { type: Number }, // 1,2,3
+  experience: { type: String }, // low, middle, high
+  motivationScore: { type: Number, default: 0 }, // cached score
 });
 
-export default mongoose.model("Organizer", OrganizerSchema);
+const Organizer = mongoose.model("Organizer", organizerSchema);
+
+export default Organizer;
