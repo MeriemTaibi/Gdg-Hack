@@ -8,6 +8,8 @@ import eventRoutes from "./routes/eventsRoute.js";
 import organizersRoutes from "./routes/organizersRoute.js";
 import { sendDiscordMessage } from "./discordBot/bot.js";
 
+import organizersRoute from "./routes/organizersRoute.js";
+import taskRoutes from "./routes/tasksRoute.js";
 dotenv.config();
 
 const app = express();
@@ -51,6 +53,9 @@ transporter.verify((error, success) => {
 
 // Routes
 app.use("/organizers", organizersRoutes);
+// Routes
+app.use("/tasks", taskRoutes);
+app.use("/organizers", organizersRoute);
 app.use("/events", eventRoutes); 
 
 // Certificate email endpoint

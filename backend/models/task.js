@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import Organizer from "./organizer.js";
 
 const TaskSchema = new mongoose.Schema({
-  description: { type: String, required: true },
+  description: { type: String, required: false },
   numb_org: Number,
   date: String,
   time: String,
